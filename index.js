@@ -2,7 +2,7 @@ const fs = require('node:fs')
 
 function config (options = {}) {
     const path = options.path  ?? '.env'
-    
+
     const fileExists = fs.existsSync(path)
     if(!fileExists) return
 
