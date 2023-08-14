@@ -1,20 +1,19 @@
 const fs = require('node:fs')
 
 function config (options = {}) {
-  try{
     const path = options.path  ?? '.env'
+    
+    const fileExists = fs.existsSync(path)
+    if(!fileExists) return
+
     const envFile = fs.readFileSync(path, 'utf-8')
-    if(envFile === '') return
+    if(envFile.trim() === '') return
 
     const envData = envFile.replaceAll(/[\r\"\']/g,'').split('\n')
-    const keyList = envData.map(key => {
-      return [ key.split('=')[0],  key.split('=')[1] ]
+    envData.forEach(data => {
+      const [key, value] = data.split('=')
+      process.env[key.trim()] = value.trim()
     });
-
-    process.env = Object.fromEntries(keyList)
-  }catch(err){
-    if(err.code === 'ENOENT') return
-  }
 }
 
 module.exports = { config }
